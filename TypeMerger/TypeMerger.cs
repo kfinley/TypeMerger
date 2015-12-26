@@ -15,8 +15,16 @@ namespace TypeMerger {
     /// URL: http://www.developmentalmadness.com/archive/2008/02/12/extend-anonymous-types-using.aspx
     /// 
     /// Extended by: Kyle Finley
-    /// Items Added: TypeMergerPolicy for ignoring properties.
+    /// Contact: Kyle@KyleFinley.net
+    /// Twitter: @KFinley
     /// 
+    /// Modification: 
+    /// - Renamed class and methods to Merger from TypeMerger and MergeTypes() to Merge()
+    /// - Created TypeMergerPolicy class for ignoring properties. Initially written to ignore based on property value but modified to base it on actual property.
+    /// - Added to TypeMergerPolicy to specifying property to be used in case of a property name collision.
+    /// - Simplified to removed multiple calls to MergeValues 
+    /// 
+    /// More info at http://goo.gl/FozOG6
     /// </summary>
     public class Merger {
 
@@ -32,10 +40,12 @@ namespace TypeMerger {
         private static Object _syncLock = new Object();
 
         /// <summary>
-        /// Merge two different object instances into a single
-        /// object which is a super-set
-        /// of the properties of both objects
-        /// </summary>
+        /// Merge two different object instances into a single object which is a super-set of the properties of both objects. 
+        /// If property name collision occurs and no policy has been created to specify which to use using the .Use() method the property value from 'values1' will be used.
+        /// </summary>        
+        /// <param name="values1">An object to be merged.</param>
+        /// <param name="values2">An object to be merged.</param>
+        /// <returns>New object containing properties from both objects</returns>
         public static Object Merge(Object values1, Object values2) {
 
             //lock for thread safe writing
@@ -75,16 +85,29 @@ namespace TypeMerger {
             }
         }
 
+        /// <summary>
+        /// Used internally by the TypeMergerPolicy class method chaining for specifying a policy to use during merging.
+        /// </summary>
         internal static Object Merge(object values1, object values2, TypeMergerPolicy policy) {
 
             typeMergerPolicy = policy;
             return Merge(values1, values2);
         }
 
+        /// <summary>
+        /// Specify a property to be ignored from a object being merged.
+        /// </summary>
+        /// <param name="ignoreProperty">The property of the object to be ignored as a Func.</param>
+        /// <returns>TypeMerger policy used in method chaining.</returns>
         public static TypeMergerPolicy Ignore(Expression<Func<object>> ignoreProperty) {
             return new TypeMergerPolicy().Ignore(ignoreProperty);
         }
 
+        /// <summary>
+        /// Specify a property to use when there is a property name collision between objects being merged.
+        /// </summary>
+        /// <param name="useProperty"></param>
+        /// <returns>TypeMerger policy used in method chaining.</returns>
         public static TypeMergerPolicy Use(Expression<Func<object>> useProperty) {
             return new TypeMergerPolicy().Use(useProperty);
         }

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TypeMerger")]
-[assembly: AssemblyDescription("TypeMerger is a simple merging utility class that will take two objects of any type and merge them into a single object. The new object is dynamically created and added to a dynamic assembly and added to the current thread domain.")]
+[assembly: AssemblyDescription("TypeMerger is a simple merging utility class that will take two objects of any type and merge them into a single object. The new object is dynamically created which is added to a dynamic assembly and added to the current thread domain.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("KyleFinley.net")]
 [assembly: AssemblyProduct("TypeMerger")]
