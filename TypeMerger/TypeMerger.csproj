@@ -39,8 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Merger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeMerger.cs" />
     <Compile Include="TypeMergerPolicy.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
