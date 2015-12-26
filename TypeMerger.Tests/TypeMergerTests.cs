@@ -145,7 +145,9 @@ namespace TypeMerger.Tests {
                                .Merge(class1, class2);
 
             Assert.AreEqual(5, result.GetType().GetProperties().Length);
+
             Assert.AreEqual(typeof(TestSubClass1), result.GetType().GetProperty("SubClass").PropertyType);
+            Assert.AreEqual(class1.SubClass.Internal, result.GetType().GetProperty("SubClass").GetValue(result).GetType().GetProperty("Internal").GetValue(result.GetType().GetProperty("SubClass").GetValue(result)));
 
         }
 
