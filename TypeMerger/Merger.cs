@@ -12,7 +12,7 @@ namespace TypeMerger {
     /// A Utility class used to merge the properties of heterogenious objects
     /// 
     /// Original Source: Mark J. Miller
-    /// URL: http://www.developmentalmadness.com/archive/2008/02/12/extend-anonymous-types-using.aspx
+    /// URL: http://www.developmentalmadness.com/2008/02/12/extend-anonymous-types-using/
     /// 
     /// Extended by: Kyle Finley
     /// Contact: Kyle@KyleFinley.net
