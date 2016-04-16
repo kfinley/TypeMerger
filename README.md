@@ -6,7 +6,7 @@ The code is based on the original TypeMerger class written by Mark Miller (http:
 
 Written by: Kyle Finley, Kyle@KyleFinley.net
 
-Twitter: @KFinley
+Twitter: (@KFinley)(https://twitter.com/kfinley)
  
 ## More
-Additional info at http://goo.gl/FozOG6
+Additional info at http://goo.gl/qJ9FqN
