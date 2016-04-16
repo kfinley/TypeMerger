@@ -9,4 +9,4 @@ Written by: Kyle Finley, Kyle@KyleFinley.net
 Twitter: [@KFinley](https://twitter.com/kfinley)
  
 ## More
-Additional info at http://goo.gl/qJ9FqN
+Additional info at [KyleFinley.net/typemerger](http://goo.gl/qJ9FqN)
