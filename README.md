@@ -4,8 +4,7 @@ The new object is dynamically created and added to a dynamic assembly which is a
 
 The code is based on the original TypeMerger class written by Mark Miller (http://www.developmentalmadness.com/). 
 
-Written by: Kyle Finley
-Contact: Kyle@KyleFinley.net
+Written by: Kyle Finley, Kyle@KyleFinley.net
 Twitter: @KFinley
  
 ## More
