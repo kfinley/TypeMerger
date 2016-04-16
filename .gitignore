@@ -1,3 +1,4 @@
+.vs
 *.userprefs
 /build/
 *.suo
@@ -17,5 +18,5 @@ Version.cs
 Version.h
 Version.cpp
 .DS_Store
-Icon
-
+Icon
+Icon
