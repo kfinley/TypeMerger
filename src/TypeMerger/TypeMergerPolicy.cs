@@ -21,15 +21,18 @@ namespace TypeMerger {
         private IList<Tuple<string, string>> useProperties;
 
         public TypeMergerPolicy() {
+            
             ignoredProperties = new List<Tuple<string, string>>();
             useProperties = new List<Tuple<string, string>>();
         }
 
         internal IList<Tuple<string, string>> IgnoredProperties {
+            
             get { return this.ignoredProperties; }
         }
 
         internal IList<Tuple<string, string>> UseProperties {
+            
             get { return this.useProperties; }
         }
 
@@ -39,6 +42,7 @@ namespace TypeMerger {
         /// <param name="ignoreProperty">The property of the object to be ignored as a Func.</param>
         /// <returns>TypeMerger policy used in method chaining.</returns>
         public TypeMergerPolicy Ignore(Expression<Func<object>> ignoreProperty) {
+            
             ignoredProperties.Add(GetObjectTypeAndProperty(ignoreProperty));
             return this;
         }
@@ -49,6 +53,7 @@ namespace TypeMerger {
         /// <param name="useProperty"></param>
         /// <returns>TypeMerger policy used in method chaining.</returns>
         public TypeMergerPolicy Use(Expression<Func<object>> useProperty) {
+            
             useProperties.Add(GetObjectTypeAndProperty(useProperty));
             return this;
         }
@@ -61,6 +66,7 @@ namespace TypeMerger {
         /// <param name="values2">An object to be merged.</param>
         /// <returns>New object containing properties from both objects</returns>
         public Object Merge(object values1, object values2) {
+            
             return Merger.Merge(values1, values2, this);
         }
 

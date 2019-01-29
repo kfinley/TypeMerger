@@ -26,7 +26,7 @@ namespace TypeMerger {
     /// 
     /// More info at http://goo.gl/FozOG6
     /// </summary>
-    public class Merger {
+    public static class Merger {
 
         //assembly/module builders
         private static AssemblyBuilder asmBuilder = null;
@@ -116,16 +116,17 @@ namespace TypeMerger {
         /// Instantiates an instance of an existing Type from cache
         /// </summary>
         private static Object CreateInstance(String name, object values1, object values2) {
+            
             Object newValues = null;
 
             //check to see if type exists
             if (anonymousTypes.ContainsKey(name)) {
 
                 //merge all values together into an array
-                Object[] allValues = MergeValues(values1, values2);
+                var allValues = MergeValues(values1, values2);
 
                 //get type
-                Type type = anonymousTypes[name];
+                var type = anonymousTypes[name];
 
                 //make sure it isn't null for some reason
                 if (type != null) {
@@ -148,11 +149,11 @@ namespace TypeMerger {
         private static PropertyDescriptor[] GetProperties(object values1, object values2) {
 
             //dynamic list to hold merged list of properties
-            List<PropertyDescriptor> properties = new List<PropertyDescriptor>();
+            var properties = new List<PropertyDescriptor>();
 
             //get the properties from both objects
-            PropertyDescriptorCollection pdc1 = TypeDescriptor.GetProperties(values1);
-            PropertyDescriptorCollection pdc2 = TypeDescriptor.GetProperties(values2);
+            var pdc1 = TypeDescriptor.GetProperties(values1);
+            var pdc2 = TypeDescriptor.GetProperties(values2);
 
             //add properties from values1
             for (int i = 0; i < pdc1.Count; i++) {
@@ -176,7 +177,8 @@ namespace TypeMerger {
         /// Get the type of each property
         /// </summary>
         private static Type[] GetTypes(PropertyDescriptor[] pdc) {
-            List<Type> types = new List<Type>();
+            
+            var types = new List<Type>();
 
             for (int i = 0; i < pdc.Length; i++)
                 types.Add(pdc[i].PropertyType);
@@ -188,10 +190,11 @@ namespace TypeMerger {
         /// Merge the values of the two types into an object array
         /// </summary>
         private static Object[] MergeValues(object values1, object values2) {
-            PropertyDescriptorCollection pdc1 = TypeDescriptor.GetProperties(values1);
-            PropertyDescriptorCollection pdc2 = TypeDescriptor.GetProperties(values2);
+            
+            var pdc1 = TypeDescriptor.GetProperties(values1);
+            var pdc2 = TypeDescriptor.GetProperties(values2);
 
-            List<Object> values = new List<Object>();
+            var values = new List<Object>();
             for (int i = 0; i < pdc1.Count; i++) {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc1[i].Name))
@@ -212,6 +215,7 @@ namespace TypeMerger {
         /// Initialize static objects
         /// </summary>
         private static void InitializeAssembly() {
+            
             //check to see if we've already instantiated
             //the static objects
             if (asmBuilder == null) {
@@ -219,15 +223,9 @@ namespace TypeMerger {
                 AssemblyName assembly = new AssemblyName();
                 assembly.Name = "AnonymousTypeExentions";
 
-                //get the current application domain
-                AppDomain domain = Thread.GetDomain();
-
                 //get a module builder object
-                asmBuilder = domain.DefineDynamicAssembly(assembly,
-                    AssemblyBuilderAccess.Run);
-                modBuilder = asmBuilder.DefineDynamicModule(
-                    asmBuilder.GetName().Name, false
-                    );
+				asmBuilder = AssemblyBuilder.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Run);
+				modBuilder = asmBuilder.DefineDynamicModule(asmBuilder.GetName().Name);
             }
         }
 
@@ -236,14 +234,15 @@ namespace TypeMerger {
         /// of PropertyDescriptors
         /// </summary>
         private static Type CreateType(String name, PropertyDescriptor[] pdc) {
+            
             //create TypeBuilder
-            TypeBuilder typeBuilder = CreateTypeBuilder(name);
+            var typeBuilder = CreateTypeBuilder(name);
 
             //get list of types for ctor definition
-            Type[] types = GetTypes(pdc);
+            var types = GetTypes(pdc);
 
             //create priate fields for use w/in the ctor body and properties
-            FieldBuilder[] fields = BuildFields(typeBuilder, pdc);
+            var fields = BuildFields(typeBuilder, pdc);
 
             //define/emit the Ctor
             BuildCtor(typeBuilder, fields, types);
@@ -259,7 +258,8 @@ namespace TypeMerger {
         /// Create a type builder with the specified name
         /// </summary>
         private static TypeBuilder CreateTypeBuilder(string typeName) {
-            TypeBuilder typeBuilder = modBuilder.DefineType(typeName,
+            
+            var typeBuilder = modBuilder.DefineType(typeName,
                         TypeAttributes.Public,
                         typeof(object));
             //return new type builder
@@ -270,15 +270,16 @@ namespace TypeMerger {
         /// Define/emit the ctor and ctor body
         /// </summary>
         private static void BuildCtor(TypeBuilder typeBuilder, FieldBuilder[] fields, Type[] types) {
+            
             //define ctor()
-            ConstructorBuilder ctor = typeBuilder.DefineConstructor(
+            var ctor = typeBuilder.DefineConstructor(
                 MethodAttributes.Public,
                 CallingConventions.Standard,
                 types
                 );
 
             //build ctor()
-            ILGenerator ctorGen = ctor.GetILGenerator();
+            var ctorGen = ctor.GetILGenerator();
 
             //create ctor that will assign to private fields
             for (int i = 0; i < fields.Length; i++) {
@@ -298,14 +299,15 @@ namespace TypeMerger {
         /// Define fields based on the list of PropertyDescriptors
         /// </summary>
         private static FieldBuilder[] BuildFields(TypeBuilder typeBuilder, PropertyDescriptor[] pdc) {
-            List<FieldBuilder> fields = new List<FieldBuilder>();
+
+            var fields = new List<FieldBuilder>();
 
             //build/define fields
             for (int i = 0; i < pdc.Length; i++) {
-                PropertyDescriptor pd = pdc[i];
+                var pd = pdc[i];
 
                 //define field as '_[Name]' with the object's Type
-                FieldBuilder field = typeBuilder.DefineField(
+                var field = typeBuilder.DefineField(
                     String.Format("_{0}", pd.Name),
                     pd.PropertyType,
                     FieldAttributes.Private
@@ -323,26 +325,18 @@ namespace TypeMerger {
         /// Build a list of Properties to match the list of private fields
         /// </summary>
         private static void BuildProperties(TypeBuilder typeBuilder, FieldBuilder[] fields) {
+            
             //build properties
             for (int i = 0; i < fields.Length; i++) {
                 //remove '_' from name for public property name
-                String propertyName = fields[i].Name.Substring(1);
+                var propertyName = fields[i].Name.Substring(1);
 
                 //define the property
-                PropertyBuilder property = typeBuilder.DefineProperty(propertyName,
+                var property = typeBuilder.DefineProperty(propertyName,
                     PropertyAttributes.None, fields[i].FieldType, null);
 
-                ////define 'Get' method only (anonymous types are read-only)
-                //MethodBuilder getMethod = typeBuilder.DefineMethod(
-                //    String.Format("Get_{0}", propertyName)
-                //    MethodAttributes.Public  MethodAttributes.SpecialName
-                //         MethodAttributes.HideBySig,
-                //    fields[i].FieldType,
-                //    Type.EmptyTypes
-                //    );
-
                 //define 'Get' method only (anonymous types are read-only)
-                MethodBuilder getMethod = typeBuilder.DefineMethod(
+                var getMethod = typeBuilder.DefineMethod(
                     String.Format("Get_{0}", propertyName),
                     MethodAttributes.Public,
                     fields[i].FieldType,
@@ -350,7 +344,7 @@ namespace TypeMerger {
                     );
 
                 //build 'Get' method
-                ILGenerator methGen = getMethod.GetILGenerator();
+                var methGen = getMethod.GetILGenerator();
 
                 //method body
                 methGen.Emit(OpCodes.Ldarg_0);
@@ -362,6 +356,7 @@ namespace TypeMerger {
                 //assign method to property 'Get'
                 property.SetGetMethod(getMethod);
 
+                //TODO: look into this....
                 ////define 'Set' method
                 //MethodBuilder setMethod = typeBuilder.DefineMethod(
                 //    String.Format("Set_{0}", propertyName),
