@@ -116,7 +116,7 @@ namespace TypeMerger {
         /// Instantiates an instance of an existing Type from cache
         /// </summary>
         private static Object CreateInstance(String name, object values1, object values2) {
-            
+
             Object newValues = null;
 
             //check to see if type exists
@@ -132,7 +132,8 @@ namespace TypeMerger {
                 if (type != null) {
                     //create a new instance
                     newValues = Activator.CreateInstance(type, allValues);
-                } else {
+                }
+                else {
                     //remove null type entry
                     lock (_syncLock)
                         anonymousTypes.Remove(name);
@@ -177,7 +178,7 @@ namespace TypeMerger {
         /// Get the type of each property
         /// </summary>
         private static Type[] GetTypes(PropertyDescriptor[] pdc) {
-            
+
             var types = new List<Type>();
 
             for (int i = 0; i < pdc.Length; i++)
@@ -190,7 +191,7 @@ namespace TypeMerger {
         /// Merge the values of the two types into an object array
         /// </summary>
         private static Object[] MergeValues(object values1, object values2) {
-            
+
             var pdc1 = TypeDescriptor.GetProperties(values1);
             var pdc2 = TypeDescriptor.GetProperties(values2);
 
@@ -215,17 +216,17 @@ namespace TypeMerger {
         /// Initialize static objects
         /// </summary>
         private static void InitializeAssembly() {
-            
+
             //check to see if we've already instantiated
             //the static objects
             if (asmBuilder == null) {
                 //create a new dynamic assembly
-                AssemblyName assembly = new AssemblyName();
+                var assembly = new AssemblyName();
                 assembly.Name = "AnonymousTypeExentions";
 
                 //get a module builder object
-				asmBuilder = AssemblyBuilder.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Run);
-				modBuilder = asmBuilder.DefineDynamicModule(asmBuilder.GetName().Name);
+                asmBuilder = AssemblyBuilder.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Run);
+                modBuilder = asmBuilder.DefineDynamicModule(asmBuilder.GetName().Name);
             }
         }
 
@@ -234,7 +235,7 @@ namespace TypeMerger {
         /// of PropertyDescriptors
         /// </summary>
         private static Type CreateType(String name, PropertyDescriptor[] pdc) {
-            
+
             //create TypeBuilder
             var typeBuilder = CreateTypeBuilder(name);
 
@@ -258,7 +259,7 @@ namespace TypeMerger {
         /// Create a type builder with the specified name
         /// </summary>
         private static TypeBuilder CreateTypeBuilder(string typeName) {
-            
+
             var typeBuilder = modBuilder.DefineType(typeName,
                         TypeAttributes.Public,
                         typeof(object));
@@ -270,7 +271,7 @@ namespace TypeMerger {
         /// Define/emit the ctor and ctor body
         /// </summary>
         private static void BuildCtor(TypeBuilder typeBuilder, FieldBuilder[] fields, Type[] types) {
-            
+
             //define ctor()
             var ctor = typeBuilder.DefineConstructor(
                 MethodAttributes.Public,
@@ -325,7 +326,7 @@ namespace TypeMerger {
         /// Build a list of Properties to match the list of private fields
         /// </summary>
         private static void BuildProperties(TypeBuilder typeBuilder, FieldBuilder[] fields) {
-            
+
             //build properties
             for (int i = 0; i < fields.Length; i++) {
                 //remove '_' from name for public property name
