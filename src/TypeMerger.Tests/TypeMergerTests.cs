@@ -1,6 +1,5 @@
 ﻿using System;
 using Xunit;
-using TypeMerger;
 
 namespace TypeMerger.Tests {
 
@@ -12,7 +11,7 @@ namespace TypeMerger.Tests {
             var obj1 = new { Property1 = "1", Property2 = "2", Property3 = "3", Property4 = "4", Property5 = "5", Property6 = "6", Property7 = "7", Property8 = "8", Property9 = "9", Property10 = "10" };
             var obj2 = new { Property11 = "11", Property12 = "12", Property13 = "13", Property14 = "14", Property15 = "15", Property16 = "16", Property17 = "17", Property18 = "18", Property19 = "19", Property20 = "20" };
 
-            var result = Merger.Merge(obj1, obj2);
+            var result = TypeMerger.Merge(obj1, obj2);
 
             Assert.Equal(20, result.GetType().GetProperties().Length);
 
@@ -44,9 +43,9 @@ namespace TypeMerger.Tests {
             var obj1 = new { Property1 = "values1", Property2 = "values1" };
             var obj2 = new { Property1 = "values2", Property4 = "values4" };
 
-            var result = Merger.Ignore(() => obj1.Property1)
-                               .Ignore(() => obj2.Property4)
-                               .Merge(obj1, obj2);
+            var result = TypeMerger.Ignore(() => obj1.Property1)
+                                   .Ignore(() => obj2.Property4)
+                                   .Merge(obj1, obj2);
 
             Assert.Equal(2, result.GetType().GetProperties().Length);
 
@@ -62,12 +61,12 @@ namespace TypeMerger.Tests {
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new { Property1 = "value2", Property3 = "3" };
 
-            var result1 = Merger.Merge(obj1, obj2);
+            var result1 = TypeMerger.Merge(obj1, obj2);
 
             Assert.Equal(3, result1.GetType().GetProperties().Length);
             Assert.Equal("value1", result1.GetType().GetProperty("Property1").GetValue(result1));
 
-            var result2 = Merger.Merge(obj2, obj1);
+            var result2 = TypeMerger.Merge(obj2, obj1);
 
             Assert.Equal(3, result2.GetType().GetProperties().Length);
             Assert.Equal("value2", result2.GetType().GetProperty("Property1").GetValue(result2));
@@ -80,8 +79,8 @@ namespace TypeMerger.Tests {
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new { Property1 = "value2", Property3 = "3" };
 
-            var result1 = Merger.Use(() => obj2.Property1)
-                                .Merge(obj1, obj2);
+            var result1 = TypeMerger.Use(() => obj2.Property1)
+                                    .Merge(obj1, obj2);
 
             Assert.Equal(3, result1.GetType().GetProperties().Length);
             Assert.Equal("value2", result1.GetType().GetProperty("Property1").GetValue(result1));
@@ -94,9 +93,9 @@ namespace TypeMerger.Tests {
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new { Property1 = "value2", Property3 = "3" };
 
-            var result = Merger.Use(() => obj2.Property1)
-                               .Ignore(() => obj2.Property3)
-                               .Merge(obj1, obj2);
+            var result = TypeMerger.Use(() => obj2.Property1)
+                                   .Ignore(() => obj2.Property3)
+                                   .Merge(obj1, obj2);
 
             Assert.Equal(2, result.GetType().GetProperties().Length);
             Assert.Equal(obj2.Property1, result.GetType().GetProperty("Property1").GetValue(result));
@@ -110,12 +109,12 @@ namespace TypeMerger.Tests {
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new { Property1 = "value2", Property3 = "3" };
 
-            var result1 = Merger.Merge(obj1, obj2);
+            var result1 = TypeMerger.Merge(obj1, obj2);
 
             Assert.Equal(3, result1.GetType().GetProperties().Length);
             Assert.Equal("value1", result1.GetType().GetProperty("Property1").GetValue(result1));
 
-            var result2 = Merger.Ignore(() => obj1.Property2)
+            var result2 = TypeMerger.Ignore(() => obj1.Property2)
                                 .Merge(obj1, obj2);
 
             Assert.Equal(2, result2.GetType().GetProperties().Length);
@@ -140,7 +139,7 @@ namespace TypeMerger.Tests {
                 Total = 28
             };
 
-            var result = Merger.Ignore(() => class1.Name)
+            var result = TypeMerger.Ignore(() => class1.Name)
                                .Ignore(() => class2.Total)
                                .Merge(class1, class2);
 
@@ -175,7 +174,7 @@ namespace TypeMerger.Tests {
                 EnumType = TestEnum.Val1
             };
 
-            var result1 = Merger.Merge(obj1, obj2);
+            var result1 = TypeMerger.Merge(obj1, obj2);
 
             Assert.Equal(19, result1.GetType().GetProperties().Length);
 

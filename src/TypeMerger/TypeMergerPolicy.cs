@@ -8,12 +8,6 @@ using System.Reflection;
 namespace TypeMerger {
     /// <summary>
     /// Policy class used with the TypeMerger class to define properties that are ignored or priority when there objects contain the same properties and there is a collision.
-    /// 
-    /// Written by: Kyle Finley
-    /// Contact: Kyle@KyleFinley.net
-    /// Twitter: @KFinley
-    /// 
-    /// More info at http://goo.gl/FozOG6
     /// </summary>
     public class TypeMergerPolicy {
 
@@ -67,7 +61,7 @@ namespace TypeMerger {
         /// <returns>New object containing properties from both objects</returns>
         public Object Merge(object values1, object values2) {
             
-            return Merger.Merge(values1, values2, this);
+            return TypeMerger.Merge(values1, values2, this);
         }
 
         /// <summary>

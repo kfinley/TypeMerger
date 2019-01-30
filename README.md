@@ -7,15 +7,15 @@ TypeMerger is a simple merging utility class that will take two objects of any t
 ### Simple usage
 This will result in a new object that has All the properties from obj1 and obj2.
 ```
-var result = Merger.Merge(obj1, obj2);
+var result = TypeMerger.Merge(obj1, obj2);
 ```
 
 ### Ignore Certain Properties
 This will result in a new object that has all of the properties from Obj1 and Obj2 Except for ``.SomeProperty`` from obj1 and ``.AnotherProperty`` from obj2.
 ```
-var result = Merger.Ignore(() => obj1.SomeProperty)
-                   .Ignore(() => obj2.AnotherProperty)
-                   .Merge(obj1, obj2); 
+var result = TypeMerger.Ignore(() => obj1.SomeProperty)
+                       .Ignore(() => obj2.AnotherProperty)
+                       .Merge(obj1, obj2); 
 
 ```
 
@@ -24,8 +24,8 @@ If both objects have the same property there is a fluent method that will tell t
 
 In this example given obj1 and obj2 that both have ``.SomeProperty``, the value from obj2 will be used.
 ```
-var result = Merger.Use(() => obj2.SomeProperty)
-                   .Merge(obj1, obj2);
+var result = TypeMerger.Use(() => obj2.SomeProperty)
+                       .Merge(obj1, obj2);
 ```
 
 ### Mix & Match Your Merge
@@ -44,10 +44,10 @@ var obj2 = new {
     SomeOtherProperty = "more stuff"
 };
 
-var result = Merger.Ignore(() => obj1.AnotherProperty)
-                   .Use(() => obj2.SomeProperty)
-                   .Ignore(() => obj2.SomePrivateStuff)
-                   .Merge(obj1, obj2);
+var result = TypeMerger.Ignore(() => obj1.AnotherProperty)
+                       .Use(() => obj2.SomeProperty)
+                       .Ignore(() => obj2.SomePrivateStuff)
+                       .Merge(obj1, obj2);
 ```
 
 The result object will have the following properties and values:

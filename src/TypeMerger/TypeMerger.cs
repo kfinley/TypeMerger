@@ -10,23 +10,8 @@ using System.Linq.Expressions;
 namespace TypeMerger {
     /// <summary>
     /// A Utility class used to merge the properties of heterogenious objects
-    /// 
-    /// Original Source: Mark J. Miller
-    /// URL: http://www.developmentalmadness.com/2008/02/12/extend-anonymous-types-using/
-    /// 
-    /// Extended by: Kyle Finley
-    /// Contact: Kyle@KyleFinley.net
-    /// Twitter: @KFinley
-    /// 
-    /// Modification: 
-    /// - Renamed class and methods to Merger from TypeMerger and MergeTypes() to Merge()
-    /// - Created TypeMergerPolicy class for ignoring properties. Initially written to ignore based on property value but modified to base it on actual property.
-    /// - Added to TypeMergerPolicy to specifying property to be used in case of a property name collision.
-    /// - Simplified to removed multiple calls to MergeValues 
-    /// 
-    /// More info at http://goo.gl/FozOG6
     /// </summary>
-    public static class Merger {
+    public static class TypeMerger {
 
         //assembly/module builders
         private static AssemblyBuilder asmBuilder = null;
