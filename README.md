@@ -1,6 +1,6 @@
 # TypeMerger - Merge two objects into one
 
-TypeMerger is a simple convention-based object merger for .NET Core. It allows two objects of any type to be merged into a new object. Object properties can be ignored and any collisions can be resolved using a fluent api. The object returned is a new ``Type`` that is dynamically generated and loaded using ``System.Reflection.Emit``.
+TypeMerger is a simple convention-based object merger for .NET Core. It allows two objects of any type to be merged into a new ``Type``. Object properties can be ignored and any collisions can be resolved using a fluent api. The object returned is a new ``Type`` that is dynamically generated and loaded using ``System.Reflection.Emit``.
 
 ## Dependencies
 None
