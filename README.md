@@ -1,7 +1,9 @@
 # TypeMerger - Merge two objects into one
 
-TypeMerger is a simple merging utility class that will take two objects of any type and merge them into a single object of a new type. This new ``Type`` is a dynamically generated and loaded using ``System.Reflection.Emit``.
+TypeMerger is a simple merging utility that will take two objects of any type and merge them into a single object of a new type. This new ``Type`` is a dynamically generated and loaded using ``System.Reflection.Emit``.
 
+## Dependencies
+None
 ## How is it used?
 
 ### Simple usage
@@ -11,7 +13,7 @@ var result = TypeMerger.Merge(obj1, obj2);
 ```
 
 ### Ignore Certain Properties
-This will result in a new object that has all of the properties from Obj1 and Obj2 Except for ``.SomeProperty`` from obj1 and ``.AnotherProperty`` from obj2.
+This will result in a new object that has all of the properties from Obj1 and Obj2 Except for ``SomeProperty`` from obj1 and ``AnotherProperty`` from obj2.
 ```
 var result = TypeMerger.Ignore(() => obj1.SomeProperty)
                        .Ignore(() => obj2.AnotherProperty)
@@ -22,11 +24,15 @@ var result = TypeMerger.Ignore(() => obj1.SomeProperty)
 ### What About Collisions? 
 If both objects have the same property there is a fluent method that will tell the ``Merger`` which object to use for that property. You simply tell the ``Merger`` which property to ``Use``.
 
-In this example given obj1 and obj2 that both have ``.SomeProperty``, the value from obj2 will be used.
+In this example given obj1 and obj2 that both have ``SomeProperty``, the value from obj2 will be used.
 ```
 var result = TypeMerger.Use(() => obj2.SomeProperty)
                        .Merge(obj1, obj2);
 ```
+
+#### *What about collisions which ``Use`` hasn't specified for a property to use?*
+
+If both objects have the same property and you do not specify which one to ``Use`` then the property from the **first** object passed to ``Merge`` will be used. (Look at the ``Merge_Types_with_Name_Collision`` unit test for an example.)
 
 ### Mix & Match Your Merge
 Combining the ``.Ignore`` and ``.Use`` fluent methods allows you to pick and choose what you want from your objects.

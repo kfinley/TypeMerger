@@ -1,15 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Description>A simple convention-based object merger for .NET Core. TypeMerger allows two objects to be merged into a new type using Reflection.Emit to generate a new type. Properties can be ignored and collisions can be resolved using a fluent api.</Description>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>TypeMerger</PackageId>
-    <Version>2.0.0</Version>
-    <Authors>Mark Miller, Kyle Finley</Authors>
+    <Title>TypeMerger</Title>
+    <Copyright>© 2019</Copyright>
+    <PackageTags>Object Merger</PackageTags>
+    <Version>2.1.0</Version>
+    <Authors>Kyle Finley, Mark Miller</Authors>
     <PackageProjectUrl>https://github.com/kfinley/TypeMerger</PackageProjectUrl>
-    <License>MIT</License>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/kfinley/TypeMerger</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="README.md" />
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />
+  </ItemGroup>
 
 </Project>
