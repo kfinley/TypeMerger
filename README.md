@@ -30,9 +30,9 @@ var result = TypeMerger.Use(() => obj2.SomeProperty)
                        .Merge(obj1, obj2);
 ```
 
-#### *What about collisions which ``Use`` hasn't specified for a property to use?*
+#### *What about collisions which ``Use`` hasn't specified which object's property to use?*
 
-If both objects have the same property and you do not specify which one to ``Use`` then the property from the **first** object passed to ``Merge`` will be used. (Look at the ``Merge_Types_with_Name_Collision`` unit test for an example.)
+If both objects have the same property, and you do not specify which one to ``Use``, then the property from the **first** object passed to ``Merge`` will be used. (Look at the ``Merge_Types_with_Name_Collision`` unit test for an example.)
 
 ### Mix & Match Your Merge
 Combining the ``.Ignore`` and ``.Use`` fluent methods allows you to pick and choose what you want from your objects.
@@ -66,7 +66,7 @@ The result object will have the following properties and values:
 
 
 ## History
-The code is based on the original TypeMerger class written by [Mark Miller](http://www.developmentalmadness.com/). Updated, enhanced, and now maintained by [Kyle Finley](https://twitter.com).
+The code is based on the original TypeMerger class written by [Mark Miller](http://www.developmentalmadness.com/). Updated, enhanced, and now maintained by [Kyle Finley](https://twitter.com/kfinley).
 
 Original posting: [KyleFinley.net/typemerger](http://goo.gl/qJ9FqN)
 
