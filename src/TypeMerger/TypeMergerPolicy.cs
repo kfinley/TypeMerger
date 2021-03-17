@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace TypeMerger {
     /// <summary>
@@ -76,10 +73,10 @@ namespace TypeMerger {
 
             try {
                 if (property.Body is MemberExpression) {
-                    objType = ((MemberExpression)property.Body).Member.ReflectedType.UnderlyingSystemType.Name;
+                    objType = ((MemberExpression)property.Body).Expression.Type.Name;
                     propName = ((MemberExpression)property.Body).Member.Name;
                 } else if (property.Body is UnaryExpression) {
-                    objType = ((MemberExpression)((UnaryExpression)property.Body).Operand).Member.ReflectedType.UnderlyingSystemType.Name;
+                    objType = ((MemberExpression)((UnaryExpression)property.Body).Operand).Expression.Type.Name;
                     propName = ((MemberExpression)((UnaryExpression)property.Body).Operand).Member.Name;
                 } else {
                     throw new Exception("Expression type unknown.");
