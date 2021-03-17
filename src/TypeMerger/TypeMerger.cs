@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.ComponentModel;
-using System.Threading;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -45,20 +44,20 @@ namespace TypeMerger {
                 }
 
                 //now that we're inside the lock - check one more time
-                object result = CreateInstance(name, values1, values2);
+                var result = CreateInstance(name, values1, values2);
                 if (result != null) {
                     typeMergerPolicy = null;
                     return result;
                 }
 
                 //merge list of PropertyDescriptors for both objects
-                PropertyDescriptor[] pdc = GetProperties(values1, values2);
+                var pdc = GetProperties(values1, values2);
 
                 //make sure static properties are properly initialized
                 InitializeAssembly();
 
                 //create the type definition
-                Type newType = CreateType(name, pdc);
+                var newType = CreateType(name, pdc);
 
                 //add it to the cache
                 anonymousTypes.Add(name, newType);
@@ -117,8 +116,7 @@ namespace TypeMerger {
                 if (type != null) {
                     //create a new instance
                     newValues = Activator.CreateInstance(type, allValues);
-                }
-                else {
+                } else {
                     //remove null type entry
                     lock (_syncLock)
                         anonymousTypes.Remove(name);
@@ -361,7 +359,5 @@ namespace TypeMerger {
 
             }
         }
-
     }
 }
-

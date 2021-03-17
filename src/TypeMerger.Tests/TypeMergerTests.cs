@@ -9,7 +9,7 @@ namespace TypeMerger.Tests {
         [Fact]
         public void Test_Basic_Merge_Types() {
 
-            
+
             var obj1 = new { Property1 = "1", Property2 = "2", Property3 = "3", Property4 = "4", Property5 = "5", Property6 = "6", Property7 = "7", Property8 = "8", Property9 = "9", Property10 = "10" };
             var obj2 = new { Property11 = "11", Property12 = "12", Property13 = "13", Property14 = "14", Property15 = "15", Property16 = "16", Property17 = "17", Property18 = "18", Property19 = "19", Property20 = "20" };
 
@@ -157,7 +157,7 @@ namespace TypeMerger.Tests {
 
         [Fact]
         public void Test_Class_with_Built_in_Types() {
-       
+
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new AllBuiltInTypes {
                 ByteType = Byte.MaxValue,
@@ -204,7 +204,29 @@ namespace TypeMerger.Tests {
             result1.GetType().GetProperty("EnumType").GetValue(result1).Should().Be(TestEnum.Val1);
 
         }
+
+        [Fact]
+        public void Test_Derived_Class_with_Ignored_Base_Class_Property() {
+
+            var obj1 = new DerivedClass {
+                Name = "foo"
+            };
+
+            var obj2 = new { Value = 123 };
+
+            var result = TypeMerger.Ignore(() => obj1.Name).Merge(obj1, obj2);
+
+            result.GetType().GetProperties().Length.Should().Be(1);
+
+        }
+
     }
+
+    public class BaseClass {
+        public string Name { get; set; }
+    }
+
+    public class DerivedClass : BaseClass { }
 
     public class TestClass1 {
 
@@ -233,7 +255,7 @@ namespace TypeMerger.Tests {
         public UInt32 UInt32Type { get; set; }
         public Int16 Int16Type { get; set; }
         public UInt16 UInt16Type { get; set; }
-        public Int64 Int64Type  { get; set; }
+        public Int64 Int64Type { get; set; }
         public UInt64 UInt64Type { get; set; }
         public Single SingleType { get; set; }
         public Double DoubleType { get; set; }
