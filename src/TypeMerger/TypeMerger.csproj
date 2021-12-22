@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>A simple convention-based object merger for .NET Core. TypeMerger allows two objects to be merged into a new type using Reflection.Emit to generate a new type. Properties can be ignored and collisions can be resolved using a fluent api.</Description>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.1;net472;net48</TargetFrameworks>
     <PackageId>TypeMerger</PackageId>
     <Title>TypeMerger</Title>
     <Copyright>© 2019</Copyright>
