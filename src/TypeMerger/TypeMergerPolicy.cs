@@ -8,8 +8,8 @@ namespace TypeMerger {
     /// </summary>
     public class TypeMergerPolicy {
 
-        private IList<Tuple<string, string>> ignoredProperties;
-        private IList<Tuple<string, string>> useProperties;
+        readonly private IList<Tuple<string, string>> ignoredProperties;
+        readonly private IList<Tuple<string, string>> useProperties;
 
         public TypeMergerPolicy() {
             
