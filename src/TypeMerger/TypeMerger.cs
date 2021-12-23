@@ -143,14 +143,14 @@ namespace TypeMerger {
             for (int i = 0; i < pdc1.Count; i++) {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc1[i].Name))
-                    & !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc1[i].Name))))
+                    && !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc1[i].Name))))
                     properties.Add(pdc1[i]);
             }
             //add properties from values2
             for (int i = 0; i < pdc2.Count; i++) {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc2[i].Name))
-                    & !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc2[i].Name))))
+                    && !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc2[i].Name))))
                     properties.Add(pdc2[i]);
             }
             //return array
@@ -182,14 +182,14 @@ namespace TypeMerger {
             for (int i = 0; i < pdc1.Count; i++) {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc1[i].Name))
-                    & !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc1[i].Name))))
+                    && !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc1[i].Name))))
                     values.Add(pdc1[i].GetValue(values1));
             }
 
             for (int i = 0; i < pdc2.Count; i++) {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc2[i].Name))
-                    & !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc2[i].Name))))
+                    && !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc2[i].Name))))
                     values.Add(pdc2[i].GetValue(values2));
             }
             return values.ToArray();
@@ -298,7 +298,7 @@ namespace TypeMerger {
                     );
 
                 //add to list of FieldBuilder objects
-                if (fields.Contains(field) == false)
+                if (!fields.Contains(field))
                     fields.Add(field);
             }
 
