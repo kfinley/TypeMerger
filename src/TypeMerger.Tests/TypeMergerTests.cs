@@ -1,6 +1,8 @@
 ﻿using System;
 using Xunit;
 using FluentAssertions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TypeMerger.Tests {
 
@@ -220,6 +222,33 @@ namespace TypeMerger.Tests {
 
         }
 
+        [Fact]
+        public void Test_Anonymous_Types_With_Names_Greater_Than_1024_Should_Use_Hash() {
+
+            // Arrange
+            var count = 30;
+            object result = null;
+
+            var l = Enumerable.Range(0, count - 1).Select(n => {
+                var k = n * 3;
+
+                return new {
+                    Prop1 = k + 1,
+                    Prop2 = k + 2,
+                    Prop3 = k + 3,
+                };
+            }).ToList();
+
+            // Act
+            l.ForEach(o => result = TypeMerger.Merge(result ?? new { }, o));
+
+            // Assert
+            result.Should().NotBeNull();
+
+            var anonymousTypes = typeof(TypeMerger).GetField("anonymousTypes", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null) as Dictionary<string, Type>;
+
+            anonymousTypes.Keys.Last().IndexOf('_').Should().BeGreaterThan(5);
+        }
     }
 
     public class BaseClass {

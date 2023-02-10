@@ -5,6 +5,8 @@ using System.Reflection.Emit;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace TypeMerger {
     /// <summary>
@@ -44,7 +46,7 @@ namespace TypeMerger {
                 }
 
                 //now that we're inside the lock - check one more time
-                var result = CreateInstance(name, values1, values2);
+                var result = CreateInstance(name, values1, values2, out name);
                 if (result != null) {
                     typeMergerPolicy = null;
                     return result;
@@ -63,7 +65,7 @@ namespace TypeMerger {
                 anonymousTypes.Add(name, newType);
 
                 //return an instance of the new Type
-                result = CreateInstance(name, values1, values2);
+                result = CreateInstance(name, values1, values2, out name);
                 typeMergerPolicy = null;
                 return result;
             }
@@ -99,9 +101,11 @@ namespace TypeMerger {
         /// <summary>
         /// Instantiates an instance of an existing Type from cache
         /// </summary>
-        private static Object CreateInstance(String name, object values1, object values2) {
+        private static Object CreateInstance(String name, object values1, object values2, out string keyName) {
 
             Object newValues = null;
+            // keyName is the name used to cache the type in the anonymousTypes dictionary.
+            keyName = name;
 
             //check to see if type exists
             if (anonymousTypes.ContainsKey(name)) {
@@ -121,6 +125,10 @@ namespace TypeMerger {
                     lock (_syncLock)
                         anonymousTypes.Remove(name);
                 }
+            } else if (name.Length > 1024) {
+                // create a hash for the type name since it's too large
+                keyName = CreateHash(name);
+                return CreateInstance(keyName, values1, values2, out keyName);
             }
 
             //return values (if any)
@@ -205,7 +213,7 @@ namespace TypeMerger {
             if (asmBuilder == null) {
                 //create a new dynamic assembly
                 var assembly = new AssemblyName();
-                assembly.Name = "AnonymousTypeExentions";
+                assembly.Name = "AnonymousTypeExtensions";
 
                 //get a module builder object
                 asmBuilder = AssemblyBuilder.DefineDynamicAssembly(assembly, AssemblyBuilderAccess.Run);
@@ -225,7 +233,7 @@ namespace TypeMerger {
             //get list of types for ctor definition
             var types = GetTypes(pdc);
 
-            //create priate fields for use w/in the ctor body and properties
+            //create private fields for use w/in the ctor body and properties
             var fields = BuildFields(typeBuilder, pdc);
 
             //define/emit the Ctor
@@ -248,6 +256,17 @@ namespace TypeMerger {
                         typeof(object));
             //return new type builder
             return typeBuilder;
+        }
+
+        /// <summary>
+        /// Create a base64 string of a sha256 computed hash of a value
+        /// </summary>
+        private static string CreateHash(string value) {
+            lock (_syncLock) {
+                using (var sha256 = SHA256.Create()) {
+                    return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(value)));
+                }
+            }
         }
 
         /// <summary>
