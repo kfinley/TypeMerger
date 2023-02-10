@@ -5,10 +5,15 @@
     <TargetFrameworks>netstandard2.1;net472;net48</TargetFrameworks>
     <PackageId>TypeMerger</PackageId>
     <Title>TypeMerger</Title>
-    <Copyright>© 2019</Copyright>
+    <Copyright>© 2023</Copyright>
     <PackageTags>Object Merger</PackageTags>
-    <Version>2.1.0</Version>
-    <Authors>Kyle Finley, Mark Miller</Authors>
+    <Version>2.1.2</Version>
+    <Authors>
+      Kyle Finley, github.com/kfinley
+      Mark Miller, github.com/developmentalmadness
+      github.com/jpmorel
+      github.com/jctheod
+    </Authors>
     <PackageProjectUrl>https://github.com/kfinley/TypeMerger</PackageProjectUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <RepositoryType>git</RepositoryType>
