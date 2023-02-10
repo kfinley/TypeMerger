@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Reflection.Emit;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Reflection.Emit;
 
-namespace TypeMerger {
+namespace TypeMerger
+{
     /// <summary>
     /// A Utility class used to merge the properties of heterogenious objects
     /// </summary>
-    public static class TypeMerger {
+    public static class TypeMerger
+    {
 
         //assembly/module builders
         private static AssemblyBuilder asmBuilder = null;
@@ -23,6 +25,21 @@ namespace TypeMerger {
         //used for thread-safe access to Type Dictionary
         private static Object _syncLock = new Object();
 
+        private static string GetTargetTypeName(Object values1, Object values2, TypeNamingStrategy typeNamingStrategy)
+        {
+            switch (typeNamingStrategy)
+            {
+                case TypeNamingStrategy.FromObjects:
+                    return string.Format("{0}_{1}", values1.GetType(), values2.GetType());
+
+                case TypeNamingStrategy.Unique:
+                    return $"_{Guid.NewGuid():N}";
+
+                default:
+                    throw new NotImplementedException(@"Type naming strategy not implemented.");
+            }
+        }
+
         /// <summary>
         /// Merge two different object instances into a single object which is a super-set of the properties of both objects. 
         /// If property name collision occurs and no policy has been created to specify which to use using the .Use() method the property value from 'values1' will be used.
@@ -30,21 +47,23 @@ namespace TypeMerger {
         /// <param name="values1">An object to be merged.</param>
         /// <param name="values2">An object to be merged.</param>
         /// <returns>New object containing properties from both objects</returns>
-        public static Object Merge(Object values1, Object values2) {
-
+        public static Object Merge(Object values1, Object values2, TypeNamingStrategy typeNamingStrategy = TypeNamingStrategy.FromObjects)
+        {
             //lock for thread safe writing
-            lock (_syncLock) {
-
+            lock (_syncLock)
+            {
                 //create a name
-                var name = $@"_{Guid.NewGuid():N}";
+                var name = GetTargetTypeName(values1, values2, typeNamingStrategy);
 
-                if (typeMergerPolicy != null) {
+                if (typeMergerPolicy != null)
+                {
                     name += "_" + string.Join(",", typeMergerPolicy.IgnoredProperties.Select(x => String.Format("{0}_{1}", x.Item1, x.Item2)));
                 }
 
                 //now that we're inside the lock - check one more time
                 var result = CreateInstance(name, values1, values2);
-                if (result != null) {
+                if (result != null)
+                {
                     typeMergerPolicy = null;
                     return result;
                 }
@@ -71,7 +90,8 @@ namespace TypeMerger {
         /// <summary>
         /// Used internally by the TypeMergerPolicy class method chaining for specifying a policy to use during merging.
         /// </summary>
-        internal static Object Merge(object values1, object values2, TypeMergerPolicy policy) {
+        internal static Object Merge(object values1, object values2, TypeMergerPolicy policy)
+        {
 
             typeMergerPolicy = policy;
             return Merge(values1, values2);
@@ -82,7 +102,8 @@ namespace TypeMerger {
         /// </summary>
         /// <param name="ignoreProperty">The property of the object to be ignored as a Func.</param>
         /// <returns>TypeMerger policy used in method chaining.</returns>
-        public static TypeMergerPolicy Ignore(Expression<Func<object>> ignoreProperty) {
+        public static TypeMergerPolicy Ignore(Expression<Func<object>> ignoreProperty)
+        {
             return new TypeMergerPolicy().Ignore(ignoreProperty);
         }
 
@@ -91,19 +112,22 @@ namespace TypeMerger {
         /// </summary>
         /// <param name="useProperty"></param>
         /// <returns>TypeMerger policy used in method chaining.</returns>
-        public static TypeMergerPolicy Use(Expression<Func<object>> useProperty) {
+        public static TypeMergerPolicy Use(Expression<Func<object>> useProperty)
+        {
             return new TypeMergerPolicy().Use(useProperty);
         }
 
         /// <summary>
         /// Instantiates an instance of an existing Type from cache
         /// </summary>
-        private static Object CreateInstance(String name, object values1, object values2) {
+        private static Object CreateInstance(String name, object values1, object values2)
+        {
 
             Object newValues = null;
 
             //check to see if type exists
-            if (anonymousTypes.ContainsKey(name)) {
+            if (anonymousTypes.ContainsKey(name))
+            {
 
                 //merge all values together into an array
                 var allValues = MergeValues(values1, values2);
@@ -112,10 +136,13 @@ namespace TypeMerger {
                 var type = anonymousTypes[name];
 
                 //make sure it isn't null for some reason
-                if (type != null) {
+                if (type != null)
+                {
                     //create a new instance
                     newValues = Activator.CreateInstance(type, allValues);
-                } else {
+                }
+                else
+                {
                     //remove null type entry
                     lock (_syncLock)
                         anonymousTypes.Remove(name);
@@ -129,7 +156,8 @@ namespace TypeMerger {
         /// <summary>
         /// Merge PropertyDescriptors for both objects
         /// </summary>
-        private static PropertyDescriptor[] GetProperties(object values1, object values2) {
+        private static PropertyDescriptor[] GetProperties(object values1, object values2)
+        {
 
             //dynamic list to hold merged list of properties
             var properties = new List<PropertyDescriptor>();
@@ -139,14 +167,16 @@ namespace TypeMerger {
             var pdc2 = TypeDescriptor.GetProperties(values2);
 
             //add properties from values1
-            for (int i = 0; i < pdc1.Count; i++) {
+            for (int i = 0; i < pdc1.Count; i++)
+            {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc1[i].Name))
                     && !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc1[i].Name))))
                     properties.Add(pdc1[i]);
             }
             //add properties from values2
-            for (int i = 0; i < pdc2.Count; i++) {
+            for (int i = 0; i < pdc2.Count; i++)
+            {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc2[i].Name))
                     && !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc2[i].Name))))
@@ -159,7 +189,8 @@ namespace TypeMerger {
         /// <summary>
         /// Get the type of each property
         /// </summary>
-        private static Type[] GetTypes(PropertyDescriptor[] pdc) {
+        private static Type[] GetTypes(PropertyDescriptor[] pdc)
+        {
 
             var types = new List<Type>();
 
@@ -172,20 +203,23 @@ namespace TypeMerger {
         /// <summary>
         /// Merge the values of the two types into an object array
         /// </summary>
-        private static Object[] MergeValues(object values1, object values2) {
+        private static Object[] MergeValues(object values1, object values2)
+        {
 
             var pdc1 = TypeDescriptor.GetProperties(values1);
             var pdc2 = TypeDescriptor.GetProperties(values2);
 
             var values = new List<Object>();
-            for (int i = 0; i < pdc1.Count; i++) {
+            for (int i = 0; i < pdc1.Count; i++)
+            {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc1[i].Name))
                     && !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc1[i].Name))))
                     values.Add(pdc1[i].GetValue(values1));
             }
 
-            for (int i = 0; i < pdc2.Count; i++) {
+            for (int i = 0; i < pdc2.Count; i++)
+            {
                 if (typeMergerPolicy == null
                     || (!typeMergerPolicy.IgnoredProperties.Contains(new Tuple<string, string>(values2.GetType().Name, pdc2[i].Name))
                     && !typeMergerPolicy.UseProperties.Contains(new Tuple<string, string>(values1.GetType().Name, pdc2[i].Name))))
@@ -197,11 +231,13 @@ namespace TypeMerger {
         /// <summary>
         /// Initialize static objects
         /// </summary>
-        private static void InitializeAssembly() {
+        private static void InitializeAssembly()
+        {
 
             //check to see if we've already instantiated
             //the static objects
-            if (asmBuilder == null) {
+            if (asmBuilder == null)
+            {
                 //create a new dynamic assembly
                 var assembly = new AssemblyName();
                 assembly.Name = "AnonymousTypeExentions";
@@ -216,7 +252,8 @@ namespace TypeMerger {
         /// Create a new Type definition from the list
         /// of PropertyDescriptors
         /// </summary>
-        private static Type CreateType(String name, PropertyDescriptor[] pdc) {
+        private static Type CreateType(String name, PropertyDescriptor[] pdc)
+        {
 
             //create TypeBuilder
             var typeBuilder = CreateTypeBuilder(name);
@@ -240,7 +277,8 @@ namespace TypeMerger {
         /// <summary>
         /// Create a type builder with the specified name
         /// </summary>
-        private static TypeBuilder CreateTypeBuilder(string typeName) {
+        private static TypeBuilder CreateTypeBuilder(string typeName)
+        {
 
             var typeBuilder = modBuilder.DefineType(typeName,
                         TypeAttributes.Public,
@@ -252,7 +290,8 @@ namespace TypeMerger {
         /// <summary>
         /// Define/emit the ctor and ctor body
         /// </summary>
-        private static void BuildCtor(TypeBuilder typeBuilder, FieldBuilder[] fields, Type[] types) {
+        private static void BuildCtor(TypeBuilder typeBuilder, FieldBuilder[] fields, Type[] types)
+        {
 
             //define ctor()
             var ctor = typeBuilder.DefineConstructor(
@@ -265,7 +304,8 @@ namespace TypeMerger {
             var ctorGen = ctor.GetILGenerator();
 
             //create ctor that will assign to private fields
-            for (int i = 0; i < fields.Length; i++) {
+            for (int i = 0; i < fields.Length; i++)
+            {
                 //load argument (parameter)
                 ctorGen.Emit(OpCodes.Ldarg_0);
                 ctorGen.Emit(OpCodes.Ldarg, (i + 1));
@@ -281,12 +321,14 @@ namespace TypeMerger {
         /// <summary>
         /// Define fields based on the list of PropertyDescriptors
         /// </summary>
-        private static FieldBuilder[] BuildFields(TypeBuilder typeBuilder, PropertyDescriptor[] pdc) {
+        private static FieldBuilder[] BuildFields(TypeBuilder typeBuilder, PropertyDescriptor[] pdc)
+        {
 
             var fields = new List<FieldBuilder>();
 
             //build/define fields
-            for (int i = 0; i < pdc.Length; i++) {
+            for (int i = 0; i < pdc.Length; i++)
+            {
                 var pd = pdc[i];
 
                 //define field as '_[Name]' with the object's Type
@@ -307,10 +349,12 @@ namespace TypeMerger {
         /// <summary>
         /// Build a list of Properties to match the list of private fields
         /// </summary>
-        private static void BuildProperties(TypeBuilder typeBuilder, FieldBuilder[] fields) {
+        private static void BuildProperties(TypeBuilder typeBuilder, FieldBuilder[] fields)
+        {
 
             //build properties
-            for (int i = 0; i < fields.Length; i++) {
+            for (int i = 0; i < fields.Length; i++)
+            {
                 //remove '_' from name for public property name
                 var propertyName = fields[i].Name.Substring(1);
 

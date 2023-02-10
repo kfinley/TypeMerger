@@ -1,13 +1,17 @@
-﻿using System;
+﻿using FluentAssertions;
+using System;
+using System.Linq;
 using Xunit;
-using FluentAssertions;
 
-namespace TypeMerger.Tests {
+namespace TypeMerger.Tests
+{
 
-    public class TypeMergerTests {
+    public class TypeMergerTests
+    {
 
         [Fact]
-        public void Test_Basic_Merge_Types() {
+        public void Test_Basic_Merge_Types()
+        {
 
 
             var obj1 = new { Property1 = "1", Property2 = "2", Property3 = "3", Property4 = "4", Property5 = "5", Property6 = "6", Property7 = "7", Property8 = "8", Property9 = "9", Property10 = "10" };
@@ -40,7 +44,8 @@ namespace TypeMerger.Tests {
         }
 
         [Fact]
-        public void Merge_Types_with_Ignore_Policy() {
+        public void Merge_Types_with_Ignore_Policy()
+        {
 
             var obj1 = new { Property1 = "value1", Property2 = "value1" };
             var obj2 = new { Property1 = "value2", Property4 = "value4" };
@@ -56,7 +61,8 @@ namespace TypeMerger.Tests {
         }
 
         [Fact]
-        public void Merge_Types_with_Name_Collision() {
+        public void Merge_Types_with_Name_Collision()
+        {
 
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new { Property1 = "value2", Property3 = "3" };
@@ -76,7 +82,8 @@ namespace TypeMerger.Tests {
         }
 
         [Fact]
-        public void Test_Use_Method_to_Handle_Name_Collision_Priority() {
+        public void Test_Use_Method_to_Handle_Name_Collision_Priority()
+        {
 
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new { Property1 = "value2", Property3 = "3" };
@@ -90,7 +97,8 @@ namespace TypeMerger.Tests {
         }
 
         [Fact]
-        public void Test_Ignore_and_Use_Methods_used_in_Single_Merge_Policy() {
+        public void Test_Ignore_and_Use_Methods_used_in_Single_Merge_Policy()
+        {
 
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new { Property1 = "value2", Property3 = "3" };
@@ -106,7 +114,8 @@ namespace TypeMerger.Tests {
         }
 
         [Fact]
-        public void Test_Multiple_Type_Creation_from_Same_Anonymous_Types_Sources() {
+        public void Test_Multiple_Type_Creation_from_Same_Anonymous_Types_Sources()
+        {
 
             var obj1 = new { Property1 = "value1", Property2 = "2" };
             var obj2 = new { Property1 = "value2", Property3 = "3" };
@@ -124,18 +133,22 @@ namespace TypeMerger.Tests {
         }
 
         [Fact]
-        public void Test_Type_Creation_from_Concrete_Classes() {
+        public void Test_Type_Creation_from_Concrete_Classes()
+        {
 
-            var class1 = new TestClass1 {
+            var class1 = new TestClass1
+            {
                 Name = "Foo",
                 Description = "Test Class Instance",
                 Number = 10,
-                SubClass = new TestSubClass1 {
+                SubClass = new TestSubClass1
+                {
                     Internal = "Inside"
                 }
             };
 
-            var class2 = new TestClass2 {
+            var class2 = new TestClass2
+            {
                 FullName = "Test Class 2",
                 FullAddress = "123 Main St.",
                 Total = 28
@@ -156,10 +169,12 @@ namespace TypeMerger.Tests {
         }
 
         [Fact]
-        public void Test_Class_with_Built_in_Types() {
+        public void Test_Class_with_Built_in_Types()
+        {
 
             var obj1 = new { Property1 = "value1", Property2 = "2" };
-            var obj2 = new AllBuiltInTypes {
+            var obj2 = new AllBuiltInTypes
+            {
                 ByteType = Byte.MaxValue,
                 SByteType = SByte.MaxValue,
                 Int32Type = Int32.MaxValue,
@@ -206,9 +221,11 @@ namespace TypeMerger.Tests {
         }
 
         [Fact]
-        public void Test_Derived_Class_with_Ignored_Base_Class_Property() {
+        public void Test_Derived_Class_with_Ignored_Base_Class_Property()
+        {
 
-            var obj1 = new DerivedClass {
+            var obj1 = new DerivedClass
+            {
                 Name = "foo"
             };
 
@@ -220,15 +237,53 @@ namespace TypeMerger.Tests {
 
         }
 
+        [Fact]
+        public void Test_Merge_Anonymous_List_Using_Object_Names_To_Target_Name()
+        {
+            var result = TestMergeAnonymousList(TypeNamingStrategy.FromObjects);
+
+            result.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Test_Merge_Anonymous_List_Using_Unique_Name_To_Target_Name()
+        {
+            var result = TestMergeAnonymousList(TypeNamingStrategy.Unique);
+
+            result.Should().NotBeNull();
+        }
+
+        private object TestMergeAnonymousList(TypeNamingStrategy typeNamingStrategy)
+        {
+            var l = Enumerable.Range(0, 9).Select(n =>
+            {
+                var k = n * 3;
+
+                return new
+                {
+                    Prop1 = k + 1,
+                    Prop2 = k + 2,
+                    Prop3 = k + 3,
+                };
+            }).ToList();
+
+            object result = null;
+
+            l.ForEach(o => result = TypeMerger.Merge(result ?? new { }, o, typeNamingStrategy));
+
+            return result;
+        }
     }
 
-    public class BaseClass {
+    public class BaseClass
+    {
         public string Name { get; set; }
     }
 
     public class DerivedClass : BaseClass { }
 
-    public class TestClass1 {
+    public class TestClass1
+    {
 
         public string Name { get; set; }
         public string Description { get; set; }
@@ -237,18 +292,21 @@ namespace TypeMerger.Tests {
 
     }
 
-    public class TestClass2 {
+    public class TestClass2
+    {
 
         public string FullName { get; set; }
         public string FullAddress { get; set; }
         public int Total { get; set; }
     }
 
-    public class TestSubClass1 {
+    public class TestSubClass1
+    {
         public string Internal { get; set; }
     }
 
-    public class AllBuiltInTypes {
+    public class AllBuiltInTypes
+    {
         public Byte ByteType { get; set; }
         public SByte SByteType { get; set; }
         public Int32 Int32Type { get; set; }
