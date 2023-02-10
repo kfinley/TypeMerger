@@ -1,0 +1,19 @@
+root = true
+
+[*.cs]
+# New line preferences
+csharp_new_line_before_catch = false
+csharp_new_line_before_else = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_anonymous_types = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_open_brace = false
+csharp_new_line_between_query_expression_clauses = false
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true

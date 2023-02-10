@@ -32,9 +32,8 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/src/TypeMerger.Tests/TypeMerger.Tests.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "--project",
+                "${workspaceFolder}/src/TypeMerger.Tests/TypeMerger.Tests.csproj"
             ],
             "problemMatcher": "$msCompile"
         },

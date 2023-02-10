@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace TypeMerger {
     /// <summary>
-    /// A Utility class used to merge the properties of heterogenious objects
+    /// A Utility class used to merge the properties of heterogeneous objects
     /// </summary>
     public static class TypeMerger {
 
@@ -24,9 +24,9 @@ namespace TypeMerger {
         private static Object _syncLock = new Object();
 
         /// <summary>
-        /// Merge two different object instances into a single object which is a super-set of the properties of both objects. 
+        /// Merge two different object instances into a single object which is a super-set of the properties of both objects.
         /// If property name collision occurs and no policy has been created to specify which to use using the .Use() method the property value from 'values1' will be used.
-        /// </summary>        
+        /// </summary>
         /// <param name="values1">An object to be merged.</param>
         /// <param name="values2">An object to be merged.</param>
         /// <returns>New object containing properties from both objects</returns>
