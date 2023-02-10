@@ -35,9 +35,8 @@ namespace TypeMerger {
             //lock for thread safe writing
             lock (_syncLock) {
 
-                //create a name from the names of both Types
-                var name = String.Format("{0}_{1}", values1.GetType(),
-                    values2.GetType());
+                //create a name
+                var name = $@"_{Guid.NewGuid():N}";
 
                 if (typeMergerPolicy != null) {
                     name += "_" + string.Join(",", typeMergerPolicy.IgnoredProperties.Select(x => String.Format("{0}_{1}", x.Item1, x.Item2)));
