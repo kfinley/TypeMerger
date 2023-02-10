@@ -240,22 +240,18 @@ namespace TypeMerger.Tests
         [Fact]
         public void Test_Merge_Anonymous_List_Using_Object_Names_To_Target_Name()
         {
-            var result = TestMergeAnonymousList(TypeNamingStrategy.FromObjects);
-
-            result.Should().NotBeNull();
+            TestMergeAnonymousList(3, TypeNamingStrategy.FromObjects);
         }
 
         [Fact]
         public void Test_Merge_Anonymous_List_Using_Unique_Name_To_Target_Name()
         {
-            var result = TestMergeAnonymousList(TypeNamingStrategy.Unique);
-
-            result.Should().NotBeNull();
+            TestMergeAnonymousList(10, TypeNamingStrategy.Unique);
         }
 
-        private object TestMergeAnonymousList(TypeNamingStrategy typeNamingStrategy)
+        private void TestMergeAnonymousList(int count, TypeNamingStrategy typeNamingStrategy)
         {
-            var l = Enumerable.Range(0, 9).Select(n =>
+            var l = Enumerable.Range(0, count - 1).Select(n =>
             {
                 var k = n * 3;
 
@@ -271,7 +267,7 @@ namespace TypeMerger.Tests
 
             l.ForEach(o => result = TypeMerger.Merge(result ?? new { }, o, typeNamingStrategy));
 
-            return result;
+            result.Should().NotBeNull();
         }
     }
 
