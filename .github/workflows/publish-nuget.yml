@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-test-publish:
 
     runs-on: ubuntu-latest
 
@@ -22,7 +22,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish nuget on version change
-      uses: rohith/publish-nuget@v2
+      uses: tedd/publish-nuget-neo@v1
       with:
         PROJECT_FILE_PATH: src/TypeMerger/TypeMerger.csproj
         NUGET_KEY: ${{secrets.NUGET_API_KEY}}

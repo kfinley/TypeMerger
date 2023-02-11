@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6B4EC6BD-1717-44FB-9786-F556CF37308A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeMerger", "TypeMerger\TypeMerger.csproj", "{11F32BA9-C29F-4842-8CB0-9D5CA7CD2CE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeMerger", "src\TypeMerger\TypeMerger.csproj", "{11F32BA9-C29F-4842-8CB0-9D5CA7CD2CE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeMerger.Tests", "TypeMerger.Tests\TypeMerger.Tests.csproj", "{46D82B30-EA81-4B17-AADB-64F212355B40}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeMerger.Tests", "src\TypeMerger.Tests\TypeMerger.Tests.csproj", "{46D82B30-EA81-4B17-AADB-64F212355B40}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
