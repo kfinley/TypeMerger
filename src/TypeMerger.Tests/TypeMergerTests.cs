@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Xunit;
 using FluentAssertions;
 using System.Collections.Generic;
@@ -49,6 +49,22 @@ namespace TypeMerger.Tests {
 
             var result = TypeMerger.Ignore(() => obj1.Property1)
                                    .Ignore(() => obj2.Property4)
+                                   .Merge(obj1, obj2);
+
+            result.GetType().GetProperties().Length.Should().Be(2);
+            result.GetType().GetProperty("Property1").GetValue(result).Should().Be("value2");
+            result.GetType().GetProperty("Property2").Should().NotBeNull();
+
+        }
+
+        [Fact]
+        public void Merge_Types_with_Ignore_Policy_By_Name() {
+
+            var obj1 = new { Property1 = "value1", Property2 = "value1" };
+            var obj2 = new { Property1 = "value2", Property4 = "value4" };
+
+            var result = TypeMerger.Ignore(obj1, nameof(obj1.Property1))
+                                   .Ignore(obj2, nameof(obj2.Property4))
                                    .Merge(obj1, obj2);
 
             result.GetType().GetProperties().Length.Should().Be(2);

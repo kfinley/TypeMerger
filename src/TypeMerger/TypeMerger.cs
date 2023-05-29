@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -87,6 +87,15 @@ namespace TypeMerger {
         /// <returns>TypeMerger policy used in method chaining.</returns>
         public static TypeMergerPolicy Ignore(Expression<Func<object>> ignoreProperty) {
             return new TypeMergerPolicy().Ignore(ignoreProperty);
+        }
+
+        /// <summary>
+        /// Specify a property to be ignored from a object being merged.
+        /// </summary>
+        /// <param name="ignoreProperty">The property of the object to be ignored as a String.</param>
+        /// <returns>TypeMerger policy used in method chaining.</returns>
+        public static TypeMergerPolicy Ignore<T>(T instance, string ignoreProperty) {
+            return new TypeMergerPolicy().Ignore(instance, ignoreProperty);
         }
 
         /// <summary>
