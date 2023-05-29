@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -37,6 +37,17 @@ namespace TypeMerger {
         public TypeMergerPolicy Ignore(Expression<Func<object>> ignoreProperty) {
 
             ignoredProperties.Add(GetObjectTypeAndProperty(ignoreProperty));
+            return this;
+        }
+
+        /// <summary>
+        /// Specify a property to be ignored from a object being merged.
+        /// </summary>
+        /// <param name="instance">The object instance</param>
+        /// <param name="ignoreProperty">The property of the object to be ignored as a Func.</param>
+        /// <returns>TypeMerger policy used in method chaining.</returns>
+        public TypeMergerPolicy Ignore<T>(T instance, string ignoreProperty) {
+            ignoredProperties.Add(new Tuple<string, string>(instance.GetType().Name, ignoreProperty));
             return this;
         }
 
@@ -89,5 +100,7 @@ namespace TypeMerger {
 
             return new Tuple<string, string>(objType, propName);
         }
+
+        
     }
 }
