@@ -7,7 +7,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Security.Cryptography;
-using System.Runtime.CompilerServices;
 
 namespace TypeMerger {
     /// <summary>
