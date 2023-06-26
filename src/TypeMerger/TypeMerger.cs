@@ -33,9 +33,16 @@ namespace TypeMerger {
         /// <param name="values2">An object to be merged.</param>
         /// <returns>New object containing properties from both objects</returns>
         public static Object Merge(Object values1, Object values2) {
+            return Merge(values1, values2, null);            
+        }
 
+        /// <summary>
+        /// Used internally by the TypeMergerPolicy class method chaining for specifying a policy to use during merging.
+        /// </summary>
+        internal static Object Merge(object values1, object values2, TypeMergerPolicy policy) {
             //lock for thread safe writing
             lock (_syncLock) {
+                typeMergerPolicy = policy;
 
                 //create a name from the names of both Types
                 var name = String.Format("{0}_{1}", values1.GetType(),
@@ -69,15 +76,6 @@ namespace TypeMerger {
                 typeMergerPolicy = null;
                 return result;
             }
-        }
-
-        /// <summary>
-        /// Used internally by the TypeMergerPolicy class method chaining for specifying a policy to use during merging.
-        /// </summary>
-        internal static Object Merge(object values1, object values2, TypeMergerPolicy policy) {
-
-            typeMergerPolicy = policy;
-            return Merge(values1, values2);
         }
 
         /// <summary>
