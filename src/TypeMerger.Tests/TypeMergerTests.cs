@@ -3,6 +3,7 @@ using Xunit;
 using FluentAssertions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace TypeMerger.Tests {
 
@@ -106,6 +107,23 @@ namespace TypeMerger.Tests {
             result1.GetType().GetProperty("Property1").GetValue(result1).Should().Be("value2");
 
         }
+
+        // This test will fail... Should we support this?
+        // What causes this to fail is that we are using 2 objects that are the same type and TypeMerger.MergeValues can't handle that
+        // [Fact]
+        // public void Test_Use_Method_with_same_object_types() {
+
+        //     var obj1 = new { Property1 = "value1", Property2 = "2", Property3 = "4" };
+        //     var obj2 = new { Property1 = "value2", Property2 = "3", Property3 = "5"};
+
+        //     var result1 = TypeMerger.Use(() => obj2.Property2)
+        //                             .Merge(obj1, obj2);
+
+        //     result1.GetType().GetProperties().Length.Should().Be(3);
+        //     result1.GetType().GetProperty("Property2").GetValue(result1).Should().Be("3");
+
+        // }
+
 
         [Fact]
         public void Test_Ignore_and_Use_Methods_used_in_Single_Merge_Policy() {
@@ -265,6 +283,55 @@ namespace TypeMerger.Tests {
 
             anonymousTypes.Keys.Last().IndexOf('_').Should().BeGreaterThan(5);
         }
+
+        [Fact]
+        public void Test_TypeMergerPolicy_Maintained_On_High_Volume() {
+
+            // Arrange
+
+            // setup some objects
+            var obj1 = new { Prop1 = 1, Prop2 = 2, Prop3 = 3 };
+            var obj2 = new { Prop1 = 4, Prop2 = 5, Prop4 = 6 };
+            var obj3 = new { Prop1 = 7, Prop2 = 8, Prop5 = 9 };
+            var obj4 = new { Prop1 = 10, Prop2 = 11, Prop6 = 12 };
+            var obj5 = new { Prop1 = 13, Prop2 = 14, Prop7 = 15 };
+            var obj6 = new { Prop1 = 16, Prop2 = 17, Prop8 = 18 };
+            var obj7 = new { Prop1 = 19, Prop2 = 20, Prop9 = 21 };
+            var obj8 = new { Prop1 = 22, Prop2 = 23, Prop10 = 24 };
+            var obj9 = new { Prop1 = 25, Prop2 = 26, Prop11 = 27 };
+            var obj10 = new { Prop1 = 28, Prop2 = 29, Prop12 = 30 };
+
+            // store them in a list of tuple<object, object, TypeMergerPolicy, object>
+            var objects = new List<Tuple<object, object, TypeMergerPolicy, object>> {
+                new Tuple<object, object, TypeMergerPolicy, object>(obj1, obj2, TypeMerger.Use(() => obj2.Prop2), new { Prop1 = 1, Prop2 = 5 }),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj2, obj3, TypeMerger.Use(() => obj3.Prop1), new { Prop1 = 7, Prop2 = 5}),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj3, obj4, TypeMerger.Use(() => obj4.Prop2), new { Prop1 = 7, Prop2 = 11}),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj4, obj5, TypeMerger.Use(() => obj5.Prop1), new { Prop1 = 13, Prop2 = 11}),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj5, obj6, TypeMerger.Use(() => obj6.Prop2), new { Prop1 = 13, Prop2 = 17}),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj6, obj7, TypeMerger.Use(() => obj7.Prop1), new { Prop1 = 19, Prop2 = 17}),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj7, obj8, TypeMerger.Use(() => obj8.Prop2), new { Prop1 = 19, Prop2 = 23}),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj8, obj9, TypeMerger.Use(() => obj9.Prop1), new { Prop1 = 25, Prop2 = 23}),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj9, obj10, TypeMerger.Use(() => obj10.Prop2), new { Prop1 = 25, Prop2 = 29}),
+                new Tuple<object, object, TypeMergerPolicy, object>(obj10, obj1, TypeMerger.Use(() => obj1.Prop1), new { Prop1 = 1, Prop2 = 29})
+            };
+
+            var results = new Object[10];
+
+            // Act
+            Parallel.For(0, 9, (i, loopState) => {
+                results[i] = objects[(int)i].Item3.Merge(objects[(int)i].Item1, objects[(int)i].Item2);
+            });
+
+            // Assert
+            for (int i = 0; i < 9; i++) {
+                for (int j = 1; j < 3; j++) {
+                    var val1 = results[i].GetType().GetProperty($"Prop{j}").GetValue(results[i]);
+                    var val2 = objects[i].Item4.GetType().GetProperty($"Prop{j}").GetValue(objects[i].Item4);
+                    val1.Should().Be(val2);
+                }
+            }
+        }
+
     }
 
     public class BaseClass {

@@ -7,24 +7,25 @@
     <Title>TypeMerger</Title>
     <Copyright>© 2023</Copyright>
     <PackageTags>Object Merger</PackageTags>
-    <Version>2.1.3</Version>
+    <Version>2.1.4</Version>
     <Authors>
-      Kyle Finley, github.com/kfinley
       Mark Miller, github.com/developmentalmadness
+      Kyle Finley, github.com/kfinley
       github.com/jpmorel
       github.com/jctheod
       github.com/lmkz
     </Authors>
     <PackageProjectUrl>https://github.com/kfinley/TypeMerger</PackageProjectUrl>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/kfinley/TypeMerger</RepositoryUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../../README.md" Pack="true" PackagePath="README.md" />
-    <None Include="../../LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />
+    <None Include="../../README.md" Pack="true" PackagePath="." />
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="." />
   </ItemGroup>
 
 </Project>
